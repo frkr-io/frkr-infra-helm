@@ -1,0 +1,124 @@
+# Default values for frkr
+# This is a YAML-formatted file.
+
+# Global configuration
+global:
+  imageRegistry: ""
+  imagePullPolicy: IfNotPresent
+
+# Operator configuration
+operator:
+  enabled: true
+  image:
+    repository: frkr-operator
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Ingest Gateway configuration
+ingestGateway:
+  enabled: true
+  image:
+    repository: frkr-ingest-gateway
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+
+# Streaming Gateway configuration
+streamingGateway:
+  enabled: true
+  image:
+    repository: frkr-streaming-gateway
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+
+# Ingress configuration
+ingress:
+  enabled: true
+  type: envoy
+  envoy:
+    enabled: true
+    image:
+      repository: envoyproxy/envoy
+      tag: "latest"
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+# Auth configuration
+auth:
+  type: basic  # basic or oidc
+  oidc:
+    issuerUrl: ""
+    clientId: ""
+    clientSecretRef: ""
+
+# Data plane configuration
+dataPlane:
+  # Set to "full" to include CockroachDB and Redpanda, or "byo" for BYO
+  mode: byo
+  postgres:
+    host: ""
+    port: 26257
+    database: "frkr"
+    user: ""
+    passwordRef: ""
+    sslMode: "require"
+  redpanda:
+    brokers: []
+    tlsEnabled: false
+    tlsConfigRef: ""
+
+# Full stack configuration (only used if dataPlane.mode == "full")
+fullStack:
+  cockroachdb:
+    enabled: false
+    image:
+      repository: cockroachdb/cockroach
+      tag: "latest"
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+  redpanda:
+    enabled: false
+    image:
+      repository: docker.redpanda.com/redpandadata/redpanda
+      tag: "latest"
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+

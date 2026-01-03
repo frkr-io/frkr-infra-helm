@@ -1,0 +1,12 @@
+# Full stack values - includes CockroachDB and Redpanda
+# Use this for quick start or development
+
+dataPlane:
+  mode: full
+
+fullStack:
+  cockroachdb:
+    enabled: true
+  redpanda:
+    enabled: true
+

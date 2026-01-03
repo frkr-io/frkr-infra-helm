@@ -1,0 +1,37 @@
+{{- if .Values.operator.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "frkr.fullname" . }}-operator
+  labels:
+    {{- include "frkr.labels" . | nindent 4 }}
+    app.kubernetes.io/component: operator
+spec:
+  replicas: {{ .Values.operator.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "frkr.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: operator
+  template:
+    metadata:
+      labels:
+        {{- include "frkr.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: operator
+    spec:
+      containers:
+      - name: operator
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}"
+        imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.operator.resources | nindent 10 }}
+        env:
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+{{- end }}
+

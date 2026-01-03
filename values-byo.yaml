@@ -1,0 +1,19 @@
+# BYO (Bring Your Own) data plane values
+# Use this when you have existing CockroachDB/Postgres and Redpanda/Kafka
+
+dataPlane:
+  mode: byo
+  postgres:
+    host: "your-postgres-host"
+    port: 26257
+    database: "frkr"
+    user: "frkr"
+    passwordRef: "postgres-password"
+    sslMode: "require"
+  redpanda:
+    brokers:
+      - "redpanda-0:9092"
+      - "redpanda-1:9092"
+      - "redpanda-2:9092"
+    tlsEnabled: false
+
