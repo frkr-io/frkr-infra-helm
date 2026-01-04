@@ -1,6 +1,6 @@
-# frkr-helm
+# frkr-infra-helm
 
-Helm charts for deploying the Traffic Mirroring Platform to Kubernetes.
+Helm charts for deploying frkr to Kubernetes.
 
 ## Purpose
 
@@ -14,7 +14,7 @@ This repository contains Helm charts for deploying frkr services to Kubernetes, 
 ## Structure
 
 ```
-frkr-helm/
+frkr-infra-helm/
 ├── Chart.yaml
 ├── values.yaml
 ├── values-full.yaml        # Full stack (includes CockroachDB/Redpanda)
@@ -35,13 +35,13 @@ frkr-helm/
 ### Full Stack (includes CockroachDB and Redpanda)
 
 ```bash
-helm install frkr ./frkr-helm -f values-full.yaml
+helm install frkr . -f values-full.yaml
 ```
 
 ### BYO Data Plane
 
 ```bash
-helm install frkr ./frkr-helm -f values-byo.yaml
+helm install frkr . -f values-byo.yaml
 ```
 
 ## Configuration

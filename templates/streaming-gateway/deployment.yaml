@@ -1,0 +1,65 @@
+{{- if .Values.streamingGateway.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "frkr.fullname" . }}-streaming-gateway
+  labels:
+    {{- include "frkr.labels" . | nindent 4 }}
+    app.kubernetes.io/component: streaming-gateway
+spec:
+  replicas: {{ .Values.streamingGateway.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "frkr.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: streaming-gateway
+  template:
+    metadata:
+      labels:
+        {{- include "frkr.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: streaming-gateway
+    spec:
+      containers:
+      - name: streaming-gateway
+        image: "{{ .Values.global.imageRegistry }}{{ .Values.streamingGateway.image.repository }}:{{ .Values.streamingGateway.image.tag }}"
+        imagePullPolicy: {{ .Values.streamingGateway.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 8081
+          protocol: TCP
+        env:
+        - name: HTTP_PORT
+          value: "8081"
+        {{- if eq .Values.dataPlane.mode "full" }}
+        - name: DB_URL
+          value: "postgres://root@{{ include "frkr.fullname" . }}-cockroachdb:26257/defaultdb?sslmode=disable"
+        - name: REDPANDA_URL
+          value: "{{ include "frkr.fullname" . }}-redpanda:9092"
+        {{- else }}
+        - name: DB_URL
+          value: "postgres://{{ .Values.dataPlane.postgres.user }}@{{ .Values.dataPlane.postgres.host }}:{{ .Values.dataPlane.postgres.port }}/{{ .Values.dataPlane.postgres.database }}?sslmode={{ .Values.dataPlane.postgres.sslMode }}"
+        {{- if .Values.dataPlane.postgres.passwordRef }}
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.dataPlane.postgres.passwordRef }}
+              key: password
+        {{- end }}
+        - name: REDPANDA_URL
+          value: "{{ join "," .Values.dataPlane.redpanda.brokers }}"
+        {{- end }}
+        resources:
+          {{- toYaml .Values.streamingGateway.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+{{- end }}
+
