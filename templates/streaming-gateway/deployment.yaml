@@ -31,7 +31,7 @@ spec:
           value: "8081"
         {{- if eq .Values.dataPlane.mode "full" }}
         - name: DB_URL
-          value: "postgres://root@{{ include "frkr.fullname" . }}-cockroachdb:26257/defaultdb?sslmode=disable"
+          value: "postgres://root@{{ include "frkr.fullname" . }}-cockroachdb:26257/frkrdb?sslmode=disable"
         - name: REDPANDA_URL
           value: "{{ include "frkr.fullname" . }}-redpanda:9092"
         {{- else }}
