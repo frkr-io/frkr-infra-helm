@@ -32,7 +32,7 @@ spec:
         {{- if eq .Values.dataPlane.mode "full" }}
         - name: DB_URL
           value: "postgres://root@{{ include "frkr.fullname" . }}-cockroachdb:26257/frkrdb?sslmode=disable"
-        - name: REDPANDA_URL
+        - name: BROKER_URL
           value: "{{ include "frkr.fullname" . }}-redpanda:9092"
         {{- else }}
         - name: DB_URL
@@ -44,7 +44,7 @@ spec:
               name: {{ .Values.dataPlane.postgres.passwordRef }}
               key: password
         {{- end }}
-        - name: REDPANDA_URL
+        - name: BROKER_URL
           value: "{{ join "," .Values.dataPlane.redpanda.brokers }}"
         {{- end }}
         resources:

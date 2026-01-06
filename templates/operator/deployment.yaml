@@ -18,6 +18,7 @@ spec:
         {{- include "frkr.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: operator
     spec:
+      serviceAccountName: {{ include "frkr.fullname" . }}-operator
       containers:
       - name: operator
         image: "{{ .Values.global.imageRegistry }}{{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}"

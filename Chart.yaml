@@ -5,3 +5,13 @@ type: application
 version: 0.1.0
 appVersion: "0.1.0"
 
+dependencies:
+  - name: cockroachdb
+    version: 0.1.0
+    repository: file://./charts/cockroachdb
+    condition: fullStack.cockroachdb.enabled
+  - name: redpanda
+    version: 0.1.0
+    repository: file://./charts/redpanda
+    condition: fullStack.redpanda.enabled
+
