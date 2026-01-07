@@ -1,5 +1,7 @@
 # Helm
 charts/
+!charts/cockroachdb/
+!charts/redpanda/
 *.tgz
 
 # IDE
