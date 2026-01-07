@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frkr-redpanda
+  labels:
+    app.kubernetes.io/name: redpanda
+    app.kubernetes.io/instance: frkr
+spec:
+  ports:
+  - port: 9092
+    targetPort: 9092
+    name: kafka
+  - port: 9644
+    targetPort: 9644
+    name: admin
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: redpanda
+    app.kubernetes.io/instance: frkr

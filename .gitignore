@@ -1,5 +1,5 @@
 # Helm
-charts/
+charts/*
 !charts/cockroachdb/
 !charts/redpanda/
 *.tgz
