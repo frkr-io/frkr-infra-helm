@@ -11,3 +11,5 @@ data:
 {{ .Files.Get "migrations/20240102000001_create_streams_table.up.sql" | indent 4 }}
   20240103000001_create_usage_metrics_table.up.sql: |
 {{ .Files.Get "migrations/20240103000001_create_usage_metrics_table.up.sql" | indent 4 }}
+  20240104000001_create_clients_table.up.sql: |
+{{ .Files.Get "migrations/20240104000001_create_clients_table.up.sql" | indent 4 }}

@@ -15,3 +15,5 @@ charts/
 .DS_Store
 Thumbs.db
 
+# Synced migrations (populated from frkr-common via go.mod resolution)
+migrations/
