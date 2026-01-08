@@ -1,0 +1,23 @@
+{{- if eq .Values.auth.type "oidc" }}
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: frkr-oidc-policy
+  namespace: default
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: frkr-ingest-route
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: frkr-streaming-route
+  jwt:
+    providers:
+      - name: oidcc
+        issuer: {{ .Values.auth.oidc.issuerUrl }}
+        remoteJwks:
+          uri: {{ .Values.auth.oidc.issuerUrl | trimSuffix "/" }}/.well-known/jwks.json
+        audiences:
+          - {{ .Values.auth.oidc.audience }}
+{{- end }}
