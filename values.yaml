@@ -73,12 +73,14 @@ ingress:
 
 # Auth configuration
 auth:
-  type: basic  # basic or oidc
+  type: oidc  # basic or oidc
   oidc:
-    issuerUrl: ""
-    clientId: ""
+    issuerUrl: "https://dev-frkr.us.auth0.com/"
+    clientId: "testing-client-id"
     audience: "https://api.frkr.io"
     clientSecretRef: ""
+
+
 
 # Data plane configuration
 dataPlane:

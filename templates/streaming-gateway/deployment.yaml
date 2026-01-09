@@ -29,6 +29,8 @@ spec:
         env:
         - name: HTTP_PORT
           value: "8081"
+        - name: AUTH_TYPE
+          value: "{{ .Values.auth.type }}"
         {{- if eq .Values.dataPlane.mode "full" }}
         - name: DB_URL
           value: "postgres://root@{{ include "frkr.fullname" . }}-cockroachdb:26257/frkrdb?sslmode=disable"

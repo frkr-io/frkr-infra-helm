@@ -2,21 +2,37 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: frkr-oidc-policy
+  name: frkr-ingest-oidc-policy
   namespace: default
 spec:
-  targetRefs:
-    - group: gateway.networking.k8s.io
-      kind: HTTPRoute
-      name: frkr-ingest-route
-    - group: gateway.networking.k8s.io
-      kind: HTTPRoute
-      name: frkr-streaming-route
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: frkr-ingest-route
   jwt:
     providers:
-      - name: oidcc
+      - name: oidc-provider
         issuer: {{ .Values.auth.oidc.issuerUrl }}
-        remoteJwks:
+        remoteJWKS:
+          uri: {{ .Values.auth.oidc.issuerUrl | trimSuffix "/" }}/.well-known/jwks.json
+        audiences:
+          - {{ .Values.auth.oidc.audience }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: frkr-streaming-oidc-policy
+  namespace: default
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: frkr-streaming-route
+  jwt:
+    providers:
+      - name: oidc-provider
+        issuer: {{ .Values.auth.oidc.issuerUrl }}
+        remoteJWKS:
           uri: {{ .Values.auth.oidc.issuerUrl | trimSuffix "/" }}/.well-known/jwks.json
         audiences:
           - {{ .Values.auth.oidc.audience }}
