@@ -73,7 +73,7 @@ ingress:
 
 # Auth configuration
 auth:
-  type: oidc  # basic or oidc
+  type: composite  # composite (supports both basic + oidc), basic, or oidc
   oidc:
     issuerUrl: "https://dev-frkr.us.auth0.com/"
     clientId: "testing-client-id"
