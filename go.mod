@@ -2,7 +2,7 @@ module github.com/frkr-io/frkr-infra-helm
 
 go 1.25.5
 
-require github.com/frkr-io/frkr-common v0.2.2
+require github.com/frkr-io/frkr-common v0.2.4
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
