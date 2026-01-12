@@ -11,7 +11,7 @@ operator:
   enabled: true
   image:
     repository: frkr-operator
-    tag: "0.2.2"
+    tag: "0.1.1"
     pullPolicy: IfNotPresent
   replicaCount: 1
   resources:
@@ -27,7 +27,7 @@ ingestGateway:
   enabled: true
   image:
     repository: frkr-ingest-gateway
-    tag: "0.2.2"
+    tag: "0.1.0"
     pullPolicy: IfNotPresent
   replicaCount: 2
   resources:
@@ -43,7 +43,7 @@ streamingGateway:
   enabled: true
   image:
     repository: frkr-streaming-gateway
-    tag: "0.2.2"
+    tag: "0.1.0"
     pullPolicy: IfNotPresent
   replicaCount: 2
   resources:

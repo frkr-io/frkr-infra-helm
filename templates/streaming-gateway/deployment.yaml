@@ -23,7 +23,7 @@ spec:
         image: "{{ .Values.global.imageRegistry }}{{ .Values.streamingGateway.image.repository }}:{{ .Values.streamingGateway.image.tag }}"
         imagePullPolicy: {{ .Values.streamingGateway.image.pullPolicy }}
         ports:
-        - name: http
+        - name: grpc
           containerPort: 8081
           protocol: TCP
         env:
@@ -52,15 +52,13 @@ spec:
         resources:
           {{- toYaml .Values.streamingGateway.resources | nindent 10 }}
         livenessProbe:
-          httpGet:
-            path: /health
-            port: http
+          grpc:
+            port: 8081
           initialDelaySeconds: 10
           periodSeconds: 10
         readinessProbe:
-          httpGet:
-            path: /health
-            port: http
+          grpc:
+            port: 8081
           initialDelaySeconds: 5
           periodSeconds: 5
 {{- end }}
