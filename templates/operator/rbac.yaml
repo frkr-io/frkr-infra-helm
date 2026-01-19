@@ -16,6 +16,14 @@ rules:
 - apiGroups: ["frkr.io"]
   resources: ["frkrstreams/status", "frkrusers/status", "frkrdataplanes/status", "frkrauthconfigs/status", "frkrinits/status"]
   verbs: ["get", "update", "patch"]
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups: [""]
   resources: ["secrets", "services", "configmaps"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
