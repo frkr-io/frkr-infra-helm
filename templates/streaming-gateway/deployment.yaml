@@ -31,15 +31,12 @@ spec:
           value: "8081"
         - name: AUTH_TYPE
           value: "{{ .Values.auth.type }}"
-        {{- if eq .Values.dataPlane.mode "full" }}
-        - name: DB_URL
-          value: "postgres://root@{{ include "frkr.fullname" . }}-cockroachdb:26257/frkrdb?sslmode=disable"
-        - name: BROKER_URL
-          value: "{{ include "frkr.fullname" . }}-redpanda:9092"
-        {{- else }}
         - name: DB_URL
           value: "postgres://{{ .Values.dataPlane.postgres.user }}@{{ .Values.dataPlane.postgres.host }}:{{ .Values.dataPlane.postgres.port }}/{{ .Values.dataPlane.postgres.database }}?sslmode={{ .Values.dataPlane.postgres.sslMode }}"
-        {{- if .Values.dataPlane.postgres.passwordRef }}
+        {{- if .Values.dataPlane.postgres.password }}
+        - name: DB_PASSWORD
+          value: {{ .Values.dataPlane.postgres.password | quote }}
+        {{- else if .Values.dataPlane.postgres.passwordRef }}
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -47,8 +44,7 @@ spec:
               key: password
         {{- end }}
         - name: BROKER_URL
-          value: "{{ join "," .Values.dataPlane.redpanda.brokers }}"
-        {{- end }}
+          value: "{{ join "," .Values.dataPlane.broker.brokers }}"
         resources:
           {{- toYaml .Values.streamingGateway.resources | nindent 10 }}
         livenessProbe:
