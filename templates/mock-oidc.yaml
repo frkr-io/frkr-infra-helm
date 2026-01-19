@@ -1,0 +1,43 @@
+{{- if .Values.dev.mockOIDC.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frkr-mock-oidc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: frkr-mock-oidc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: frkr-mock-oidc
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: frkr-mock-oidc
+    spec:
+      containers:
+        - name: mock-oidc
+          image: ghcr.io/navikt/mock-oauth2-server:2.1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: JSON_CONFIG
+              value: '{ "interactiveLogin": true, "httpServer": "NettyWrapper" }'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frkr-mock-oidc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: frkr-mock-oidc
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: frkr-mock-oidc
+{{- end }}

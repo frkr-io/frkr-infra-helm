@@ -6,6 +6,17 @@ global:
   imageRegistry: ""
   imagePullPolicy: IfNotPresent
 
+# Development configuration
+dev:
+  enabled: false
+  mockOIDC:
+    enabled: false
+
+# Initialization configuration
+init:
+  migrationsPath: "/migrations"
+  databaseUrl: "" # Override if needed, otherwise derived from dataPlane
+
 # Operator configuration
 operator:
   enabled: true
@@ -87,21 +98,23 @@ dataPlane:
   # Set to "full" to include CockroachDB and Redpanda, or "byo" for BYO
   mode: byo
   postgres:
-    host: ""
-    port: 26257
+    host: "frkr-db"
+    port: 5432
     database: "frkr"
-    user: ""
-    passwordRef: ""
-    sslMode: "require"
-  redpanda:
-    brokers: []
+    user: "root"
+    password: ""
+    # type: "postgres" # or "cockroachdb"
+    type: "postgres"
+    sslMode: "disable"
+  broker:
+    brokers: ["frkr-redpanda:9092"]
     tlsEnabled: false
     tlsConfigRef: ""
 
-# Full stack configuration (only used if dataPlane.mode == "full")
-fullStack:
+# Infrastructure provisioning (optional)
+infrastructure:
   cockroachdb:
-    enabled: false
+    provision: false
     image:
       repository: cockroachdb/cockroach
       tag: "latest"
@@ -113,7 +126,7 @@ fullStack:
         cpu: 1000m
         memory: 2Gi
   redpanda:
-    enabled: false
+    provision: false
     image:
       repository: docker.redpanda.com/redpandadata/redpanda
       tag: "latest"
@@ -124,4 +137,22 @@ fullStack:
       requests:
         cpu: 1000m
         memory: 2Gi
-
+  postgres:
+    provision: false
+    image:
+      repository: postgres
+      tag: "15-alpine"
+    env:
+      postgresUser: "root"
+      postgresPassword: "password"
+      postgresDb: "frkr"
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    storage:
+      size: 10Gi
+      storageClassName: standard

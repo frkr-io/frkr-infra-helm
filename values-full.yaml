@@ -1,12 +1,20 @@
 # Full stack values - includes CockroachDB and Redpanda
 # Use this for quick start or development
 
+dev:
+  enabled: true
+
 dataPlane:
   mode: full
+  postgres:
+    type: "postgres"
 
-fullStack:
+# Provision infrastructure for quickstart/dev
+infrastructure:
   cockroachdb:
-    enabled: true
+    provision: false
+  postgres:
+    provision: true
   redpanda:
-    enabled: true
+    provision: true
 

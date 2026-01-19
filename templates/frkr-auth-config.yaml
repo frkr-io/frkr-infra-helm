@@ -1,0 +1,19 @@
+apiVersion: frkr.io/v1
+kind: FrkrAuthConfig
+metadata:
+  name: frkr-auth-config
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: {{ .Values.auth.type }}
+  {{- if eq .Values.auth.type "oidc" }}
+  oidcConfig:
+    issuerUrl: {{ .Values.auth.oidc.issuerUrl }}
+    clientId: {{ .Values.auth.oidc.clientId }}
+    clientSecretRef: {{ .Values.auth.oidc.clientSecretRef }}
+    {{- if .Values.auth.oidc.scopes }}
+    scopes:
+    {{- range .Values.auth.oidc.scopes }}
+      - {{ . }}
+    {{- end }}
+    {{- end }}
+  {{- end }}

@@ -1,0 +1,11 @@
+apiVersion: frkr.io/v1
+kind: FrkrInit
+metadata:
+  name: frkr-init
+  namespace: {{ .Release.Namespace }}
+spec:
+  migrationsPath: {{ .Values.init.migrationsPath | default "/migrations" }}
+  databaseUrl: {{ .Values.infrastructure.postgres.env.postgresUrl | default "" | quote }}
+  gateways:
+    - "{{ include "frkr.fullname" . }}-ingest-gateway"
+    - "{{ include "frkr.fullname" . }}-streaming-gateway"

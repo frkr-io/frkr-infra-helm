@@ -1,0 +1,23 @@
+apiVersion: frkr.io/v1
+kind: FrkrDataPlane
+metadata:
+  name: frkr-dataplane
+  namespace: {{ .Release.Namespace }}
+spec:
+  postgresConfig:
+    host: {{ .Values.dataPlane.postgres.host | quote }}
+    port: {{ .Values.dataPlane.postgres.port }}
+    database: {{ .Values.dataPlane.postgres.database | quote }}
+    user: {{ .Values.dataPlane.postgres.user | quote }}
+    type: {{ .Values.dataPlane.postgres.type | default "postgres" | quote }}
+    passwordRef: "frkr-db-secret"
+    sslMode: {{ .Values.dataPlane.postgres.sslMode | quote }}
+  brokerConfig:
+    brokers:
+    {{- range .Values.dataPlane.broker.brokers }}
+      - {{ . }}
+    {{- end }}
+    {{- if .Values.dataPlane.broker.tlsEnabled }}
+    tlsEnabled: true
+    tlsConfigRef: {{ .Values.dataPlane.broker.tlsConfigRef }}
+    {{- end }}

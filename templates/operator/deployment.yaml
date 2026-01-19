@@ -19,6 +19,16 @@ spec:
         app.kubernetes.io/component: operator
     spec:
       serviceAccountName: {{ include "frkr.fullname" . }}-operator
+      initContainers:
+      - name: copy-migrations
+        image: "alpine:3"
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh", "-c", "cp -L /raw-migrations/* /migrations/"]
+        volumeMounts:
+        - name: raw-migrations
+          mountPath: /raw-migrations
+        - name: migrations
+          mountPath: /migrations
       containers:
       - name: operator
         image: "{{ .Values.global.imageRegistry }}{{ .Values.operator.image.repository }}:{{ .Values.operator.image.tag }}"
@@ -34,5 +44,15 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        workingDir: /migrations
+        volumeMounts:
+        - name: migrations
+          mountPath: /migrations
+      volumes:
+      - name: raw-migrations
+        configMap:
+          name: {{ include "frkr.fullname" . }}-migrations
+      - name: migrations
+        emptyDir: {}
 {{- end }}
 
