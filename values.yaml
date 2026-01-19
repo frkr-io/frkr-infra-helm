@@ -7,10 +7,7 @@ global:
   imagePullPolicy: IfNotPresent
 
 # Development configuration
-dev:
-  enabled: false
-  mockOIDC:
-    enabled: false
+
 
 # Initialization configuration
 init:
@@ -97,7 +94,7 @@ auth:
 dataPlane:
   # Set to "full" to include CockroachDB and Redpanda, or "byo" for BYO
   mode: byo
-  postgres:
+  db:
     host: "frkr-db"
     port: 5432
     database: "frkr"
@@ -113,6 +110,13 @@ dataPlane:
 
 # Infrastructure provisioning (optional)
 infrastructure:
+  mockOIDC:
+    enabled: false
+  db:
+    user: "root"
+    password: "password"
+    name: "frkr"
+
   cockroachdb:
     provision: false
     image:
@@ -125,6 +129,9 @@ infrastructure:
       requests:
         cpu: 1000m
         memory: 2Gi
+    storage:
+      size: 10Gi
+      storageClassName: standard
   redpanda:
     provision: false
     image:
@@ -142,10 +149,6 @@ infrastructure:
     image:
       repository: postgres
       tag: "15-alpine"
-    env:
-      postgresUser: "root"
-      postgresPassword: "password"
-      postgresDb: "frkr"
     resources:
       limits:
         cpu: 1000m

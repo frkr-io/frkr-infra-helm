@@ -1,20 +1,28 @@
+{{- $pg := .Values.infrastructure.postgres }}
+{{- $crdb := .Values.infrastructure.cockroachdb }}
+{{- if or $pg.provision $crdb.provision }}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "frkr.fullname" . }}-db
   labels:
-    app.kubernetes.io/name: postgres
+    app.kubernetes.io/name: frkr-db
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: db
-{{- if .Values.infrastructure.postgres.provision }}
 spec:
   type: ClusterIP
   ports:
     - port: 5432
-      targetPort: 5432
+      targetPort: {{ if $pg.provision }}5432{{ else }}26257{{ end }}
       protocol: TCP
-      name: postgres
+      name: db
+    {{- if $crdb.provision }}
+    - port: 26258
+      targetPort: 8080
+      protocol: TCP
+      name: http
+    {{- end }}
   selector:
-    app.kubernetes.io/name: postgres
+    app.kubernetes.io/name: frkr-db
     app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

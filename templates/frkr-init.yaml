@@ -4,8 +4,7 @@ metadata:
   name: frkr-init
   namespace: {{ .Release.Namespace }}
 spec:
-  migrationsPath: {{ .Values.init.migrationsPath | default "/migrations" }}
-  databaseUrl: {{ .Values.infrastructure.postgres.env.postgresUrl | default "" | quote }}
+  databaseUrl: {{ .Values.init.databaseUrl | default (printf "postgres://%s:%s@%s:%v/%s?sslmode=%s" .Values.dataPlane.db.user .Values.dataPlane.db.password .Values.dataPlane.db.host .Values.dataPlane.db.port .Values.dataPlane.db.database .Values.dataPlane.db.sslMode) | quote }}
   gateways:
     - "{{ include "frkr.fullname" . }}-ingest-gateway"
     - "{{ include "frkr.fullname" . }}-streaming-gateway"

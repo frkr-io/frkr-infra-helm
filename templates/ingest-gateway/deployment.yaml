@@ -31,24 +31,16 @@ spec:
           value: "8080"
         - name: AUTH_TYPE
           value: "{{ .Values.auth.type }}"
-        - name: DB_HOST
-          value: {{ .Values.dataPlane.postgres.host | quote }}
-        - name: DB_PORT
-          value: {{ .Values.dataPlane.postgres.port | quote }}
-        - name: DB_USER
-          value: {{ .Values.dataPlane.postgres.user | quote }}
-        - name: DB_NAME
-          value: {{ .Values.dataPlane.postgres.database | quote }}
-        - name: DB_SSLMODE
-          value: {{ .Values.dataPlane.postgres.sslMode | quote }}
-        {{- if .Values.dataPlane.postgres.password }}
+        - name: DB_URL
+          value: "postgres://{{ .Values.dataPlane.db.user }}:{{ .Values.dataPlane.db.password }}@{{ .Values.dataPlane.db.host }}:{{ .Values.dataPlane.db.port }}/{{ .Values.dataPlane.db.database }}?sslmode={{ .Values.dataPlane.db.sslMode }}"
+        {{- if .Values.dataPlane.db.password }}
         - name: DB_PASSWORD
-          value: {{ .Values.dataPlane.postgres.password | quote }}
-        {{- else if .Values.dataPlane.postgres.passwordRef }}
+          value: {{ .Values.dataPlane.db.password | quote }}
+        {{- else if .Values.dataPlane.db.passwordRef }}
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.dataPlane.postgres.passwordRef }}
+              name: {{ .Values.dataPlane.db.passwordRef }}
               key: password
         {{- end }}
         - name: BROKER_URL

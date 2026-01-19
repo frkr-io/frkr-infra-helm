@@ -5,13 +5,13 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   postgresConfig:
-    host: {{ .Values.dataPlane.postgres.host | quote }}
-    port: {{ .Values.dataPlane.postgres.port }}
-    database: {{ .Values.dataPlane.postgres.database | quote }}
-    user: {{ .Values.dataPlane.postgres.user | quote }}
-    type: {{ .Values.dataPlane.postgres.type | default "postgres" | quote }}
+    host: {{ .Values.dataPlane.db.host | quote }}
+    port: {{ .Values.dataPlane.db.port }}
+    database: {{ .Values.dataPlane.db.database | quote }}
+    user: {{ .Values.dataPlane.db.user | quote }}
+    type: {{ .Values.dataPlane.db.type | default "postgres" | quote }}
     passwordRef: "frkr-db-secret"
-    sslMode: {{ .Values.dataPlane.postgres.sslMode | quote }}
+    sslMode: {{ .Values.dataPlane.db.sslMode | quote }}
   brokerConfig:
     brokers:
     {{- range .Values.dataPlane.broker.brokers }}

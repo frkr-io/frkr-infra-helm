@@ -11,10 +11,10 @@ metadata:
   name: {{ include "frkr.fullname" . }}-operator-role
 rules:
 - apiGroups: ["frkr.io"]
-  resources: ["frkrstreams", "frkrusers", "frkrdataplanes", "frkrauthconfigs", "frkrinits"]
+  resources: ["frkrstreams", "frkrusers", "frkrdataplanes", "frkrauthconfigs", "frkrinits", "frkrtenants", "frkrclients"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 - apiGroups: ["frkr.io"]
-  resources: ["frkrstreams/status", "frkrusers/status", "frkrdataplanes/status", "frkrauthconfigs/status", "frkrinits/status"]
+  resources: ["frkrstreams/status", "frkrusers/status", "frkrdataplanes/status", "frkrauthconfigs/status", "frkrinits/status", "frkrtenants/status", "frkrclients/status"]
   verbs: ["get", "update", "patch"]
 - apiGroups:
   - apps
