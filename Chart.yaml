@@ -6,12 +6,9 @@ version: 0.2.2
 appVersion: "0.2.2"
 
 dependencies:
-  - name: cockroachdb
-    version: 0.1.0
-    repository: file://./charts/cockroachdb
-    condition: fullStack.cockroachdb.enabled
   - name: redpanda
     version: 0.1.0
     repository: file://./charts/redpanda
-    condition: fullStack.redpanda.enabled
+    condition: infrastructure.redpanda.provision
+
 

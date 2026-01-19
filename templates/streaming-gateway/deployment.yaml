@@ -18,6 +18,10 @@ spec:
         {{- include "frkr.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: streaming-gateway
     spec:
+      initContainers:
+      - name: wait-for-db
+        image: busybox
+        command: ['sh', '-c', 'until nc -z {{ .Values.dataPlane.db.host }} {{ .Values.dataPlane.db.port }}; do echo waiting for db; sleep 2; done']
       containers:
       - name: streaming-gateway
         image: "{{ .Values.global.imageRegistry }}{{ .Values.streamingGateway.image.repository }}:{{ .Values.streamingGateway.image.tag }}"

@@ -18,6 +18,10 @@ spec:
         {{- include "frkr.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: ingest-gateway
     spec:
+      initContainers:
+      - name: wait-for-db
+        image: busybox
+        command: ['sh', '-c', 'until nc -z {{ .Values.dataPlane.db.host }} {{ .Values.dataPlane.db.port }}; do echo waiting for db; sleep 2; done']
       containers:
       - name: ingest-gateway
         image: "{{ .Values.global.imageRegistry }}{{ .Values.ingestGateway.image.repository }}:{{ .Values.ingestGateway.image.tag }}"

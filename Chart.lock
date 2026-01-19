@@ -1,9 +1,6 @@
 dependencies:
-- name: cockroachdb
-  repository: file://./charts/cockroachdb
-  version: 0.1.0
 - name: redpanda
   repository: file://./charts/redpanda
   version: 0.1.0
-digest: sha256:32f7b59e5cf4f7e69a1e64e69047be2284bf660d0e75bedece770f61d75f5e08
-generated: "2026-01-05T12:23:28.163029559-08:00"
+digest: sha256:392f60af82e65350d7309439cac7dca4af23be396c9adf84e397cd9e2de85845
+generated: "2026-01-19T12:26:12.522257195-08:00"
