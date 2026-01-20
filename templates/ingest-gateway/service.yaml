@@ -6,8 +6,17 @@ metadata:
   labels:
     {{- include "frkr.labels" . | nindent 4 }}
     app.kubernetes.io/component: ingest-gateway
+  annotations:
+    {{- if eq .Values.global.provider "oci" }}
+    service.beta.kubernetes.io/oci-load-balancer-shape: "flexible"
+    service.beta.kubernetes.io/oci-load-balancer-shape-min: "10"
+    service.beta.kubernetes.io/oci-load-balancer-shape-max: "10"
+    {{- end }}
+    {{- with .Values.ingestGateway.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.ingestGateway.service.type }}
   ports:
   - port: 8080
     targetPort: http

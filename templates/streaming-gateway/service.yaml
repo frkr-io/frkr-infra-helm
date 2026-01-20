@@ -6,8 +6,17 @@ metadata:
   labels:
     {{- include "frkr.labels" . | nindent 4 }}
     app.kubernetes.io/component: streaming-gateway
+  annotations:
+    {{- if eq .Values.global.provider "oci" }}
+    service.beta.kubernetes.io/oci-load-balancer-shape: "flexible"
+    service.beta.kubernetes.io/oci-load-balancer-shape-min: "10"
+    service.beta.kubernetes.io/oci-load-balancer-shape-max: "10"
+    {{- end }}
+    {{- with .Values.streamingGateway.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.streamingGateway.service.type }}
   ports:
   - port: 8081
     targetPort: grpc

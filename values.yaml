@@ -5,6 +5,7 @@
 global:
   imageRegistry: ""
   imagePullPolicy: IfNotPresent
+  provider: "" # oci, aws, etc.
 
 # Development configuration
 
@@ -38,6 +39,9 @@ ingestGateway:
     tag: "0.1.0"
     pullPolicy: IfNotPresent
   replicaCount: 2
+  service:
+    type: ClusterIP
+    annotations: {}
   resources:
     limits:
       cpu: 1000m
@@ -54,6 +58,9 @@ streamingGateway:
     tag: "0.1.0"
     pullPolicy: IfNotPresent
   replicaCount: 2
+  service:
+    type: ClusterIP
+    annotations: {}
   resources:
     limits:
       cpu: 1000m
