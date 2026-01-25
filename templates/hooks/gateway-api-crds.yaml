@@ -1,0 +1,52 @@
+{{- if .Values.platform.k8sGatewayAPI.install }}
+# Helm hook Job to install Kubernetes Gateway API CRDs
+# This runs before the main chart installation to ensure CRDs exist
+#
+# Note: "K8s Gateway API" refers to kubernetes-sigs/gateway-api CRDs (HTTPRoute, Gateway, etc.)
+# This is NOT related to frkr-ingest-gateway or frkr-streaming-gateway application services.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-gateway-api-install
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "frkr.labels" . | nindent 4 }}
+    app.kubernetes.io/component: platform-setup
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        {{- include "frkr.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: gateway-api-installer
+    spec:
+      serviceAccountName: {{ .Release.Name }}-platform-installer
+      restartPolicy: Never
+      containers:
+        - name: install
+          image: bitnami/kubectl:1.29
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Installing K8s Gateway API CRDs from {{ .Values.platform.k8sGatewayAPI.manifestUrl }}"
+              kubectl apply -f {{ .Values.platform.k8sGatewayAPI.manifestUrl }}
+              echo "Waiting for CRDs to be established..."
+              kubectl wait --for=condition=Established crd/gateways.gateway.networking.k8s.io --timeout=60s
+              kubectl wait --for=condition=Established crd/httproutes.gateway.networking.k8s.io --timeout=60s
+              echo "K8s Gateway API CRDs installed successfully"
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+  backoffLimit: 3
+{{- end }}

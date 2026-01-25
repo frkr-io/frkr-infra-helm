@@ -166,3 +166,20 @@ infrastructure:
     storage:
       size: 10Gi
       storageClassName: standard
+
+# Platform dependencies configuration
+# These are Kubernetes platform-level components required by frkr
+platform:
+  # Kubernetes Gateway API CRDs (HTTPRoute, Gateway, etc.)
+  # Note: This is the kubernetes-sigs/gateway-api project, NOT frkr gateways
+  k8sGatewayAPI:
+    install: true
+    version: "v1.2.1"
+    manifestUrl: "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml"
+  
+  # cert-manager for TLS certificate management
+  certManager:
+    install: false  # Enable for production with TLS
+    installCRDs: true
+    version: "v1.14.0"
+
