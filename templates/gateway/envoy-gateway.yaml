@@ -23,7 +23,7 @@ spec:
     allowedRoutes:
       namespaces:
         from: Same
-  {{- if .Values.ingress.tls.enabled }}
+  {{- if and .Values.ingress.tls .Values.ingress.tls.enabled }}
   - name: https
     protocol: HTTPS
     port: 443

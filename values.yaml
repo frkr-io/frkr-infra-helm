@@ -85,6 +85,11 @@ ingress:
       requests:
         cpu: 100m
         memory: 128Mi
+  host: ""
+  tls:
+    enabled: false
+    secretName: ""
+  annotations: {}
 
 # Auth configuration
 auth:
