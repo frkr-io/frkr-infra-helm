@@ -183,3 +183,7 @@ platform:
     installCRDs: true
     version: "v1.14.0"
 
+# Subchart Configuration
+cert-manager:
+  installCRDs: true
+

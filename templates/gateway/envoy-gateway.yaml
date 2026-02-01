@@ -12,6 +12,10 @@ metadata:
   namespace: default
 spec:
   gatewayClassName: frkr-gateway-class
+  {{- if .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+  {{- end }}
   listeners:
   - name: http
     protocol: HTTP
@@ -19,13 +23,19 @@ spec:
     allowedRoutes:
       namespaces:
         from: Same
+  {{- if .Values.ingress.tls.enabled }}
   - name: https
     protocol: HTTPS
     port: 443
+    hostname: {{ .Values.ingress.host | default "frkr.local" | quote }}
     tls:
       mode: Terminate
       certificateRefs:
-      - name: frkr-tls
+      - name: {{ .Values.ingress.tls.secretName | default "frkr-tls" }}
+    allowedRoutes:
+      namespaces:
+        from: Same
+  {{- end }}
     allowedRoutes:
       namespaces:
         from: Same
@@ -39,8 +49,12 @@ spec:
   parentRefs:
   - name: frkr-gateway
   hostnames:
+  {{- if .Values.ingress.host }}
+  - {{ .Values.ingress.host | quote }}
+  {{- else }}
   - "frkr.local"
   - "localhost"
+  {{- end }}
   rules:
   - matches:
     - path:
@@ -66,8 +80,12 @@ spec:
   parentRefs:
   - name: frkr-gateway
   hostnames:
+  {{- if .Values.ingress.host }}
+  - {{ .Values.ingress.host | quote }}
+  {{- else }}
   - "frkr.local"
   - "localhost"
+  {{- end }}
   rules:
   - matches:
     - path:
