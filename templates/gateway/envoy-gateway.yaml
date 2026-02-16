@@ -10,12 +10,12 @@ kind: Gateway
 metadata:
   name: frkr-gateway
   namespace: default
-spec:
-  gatewayClassName: frkr-gateway-class
   {{- if .Values.ingress.annotations }}
   annotations:
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
   {{- end }}
+spec:
+  gatewayClassName: frkr-gateway-class
   listeners:
   - name: http
     protocol: HTTP
@@ -27,7 +27,9 @@ spec:
   - name: https
     protocol: HTTPS
     port: 443
+    {{- if and (not .Values.ingress.ingestHost) (not .Values.ingress.streamingHost) }}
     hostname: {{ .Values.ingress.host | default "frkr.local" | quote }}
+    {{- end }}
     tls:
       mode: Terminate
       certificateRefs:
@@ -36,9 +38,6 @@ spec:
       namespaces:
         from: Same
   {{- end }}
-    allowedRoutes:
-      namespaces:
-        from: Same
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -48,12 +47,13 @@ metadata:
 spec:
   parentRefs:
   - name: frkr-gateway
+  {{- if or .Values.ingress.ingestHost .Values.ingress.host }}
   hostnames:
-  {{- if .Values.ingress.host }}
-  - {{ .Values.ingress.host | quote }}
+  {{- if .Values.ingress.ingestHost }}
+  - {{ .Values.ingress.ingestHost | quote }}
   {{- else }}
-  - "frkr.local"
-  - "localhost"
+  - {{ .Values.ingress.host | quote }}
+  {{- end }}
   {{- end }}
   rules:
   - matches:
@@ -70,27 +70,31 @@ spec:
     backendRefs:
     - name: frkr-ingest-gateway
       port: 8080
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /metrics
+    backendRefs:
+    - name: frkr-ingest-gateway
+      port: 8080
 ---
 apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
+kind: GRPCRoute
 metadata:
   name: frkr-streaming-route
   namespace: default
 spec:
   parentRefs:
   - name: frkr-gateway
+  {{- if or .Values.ingress.streamingHost .Values.ingress.host }}
   hostnames:
-  {{- if .Values.ingress.host }}
-  - {{ .Values.ingress.host | quote }}
+  {{- if .Values.ingress.streamingHost }}
+  - {{ .Values.ingress.streamingHost | quote }}
   {{- else }}
-  - "frkr.local"
-  - "localhost"
+  - {{ .Values.ingress.host | quote }}
+  {{- end }}
   {{- end }}
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /stream
-    backendRefs:
+  - backendRefs:
     - name: frkr-streaming-gateway
       port: 8081

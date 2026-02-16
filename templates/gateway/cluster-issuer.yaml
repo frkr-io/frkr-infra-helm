@@ -1,0 +1,19 @@
+{{- if .Values.platform.certManager.install }}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .Values.platform.certManager.issuerName | default "letsencrypt-prod" }}
+spec:
+  acme:
+    server: {{ .Values.platform.certManager.issuerServer | default "https://acme-v02.api.letsencrypt.org/directory" }}
+    email: {{ required "platform.certManager.email is required when cert-manager is enabled" .Values.platform.certManager.email }}
+    privateKeySecretRef:
+      name: {{ .Values.platform.certManager.issuerName | default "letsencrypt-prod" }}-account-key
+    solvers:
+    - http01:
+        gatewayHTTPRoute:
+          parentRefs:
+          - name: frkr-gateway
+            namespace: default
+            kind: Gateway
+{{- end }}

@@ -2,8 +2,5 @@ dependencies:
 - name: redpanda
   repository: file://./charts/redpanda
   version: 0.1.0
-- name: cert-manager
-  repository: https://charts.jetstack.io
-  version: v1.14.0
-digest: sha256:521783c8f6731fd93f323da8f3b99364ecb02a1957b3cb64685c055b42f7e23e
-generated: "2026-02-01T01:01:39.303232811-08:00"
+digest: sha256:392f60af82e65350d7309439cac7dca4af23be396c9adf84e397cd9e2de85845
+generated: "2026-02-16T11:01:54.034807442-08:00"

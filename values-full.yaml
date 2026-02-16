@@ -6,6 +6,8 @@ dev:
 
 dataPlane:
   mode: full
+  db:
+    password: "password"  # Must match infrastructure.db.password below
   postgres:
     type: "postgres"
 

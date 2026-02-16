@@ -1,0 +1,22 @@
+{{- if and .Values.platform.certManager.install .Values.ingress.tls.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: frkr-tls-cert
+  namespace: default
+spec:
+  secretName: {{ .Values.ingress.tls.secretName | default "frkr-tls" }}
+  issuerRef:
+    name: {{ .Values.platform.certManager.issuerName | default "letsencrypt-prod" }}
+    kind: ClusterIssuer
+  dnsNames:
+  {{- if .Values.ingress.host }}
+  - {{ .Values.ingress.host | quote }}
+  {{- end }}
+  {{- if .Values.ingress.ingestHost }}
+  - {{ .Values.ingress.ingestHost | quote }}
+  {{- end }}
+  {{- if .Values.ingress.streamingHost }}
+  - {{ .Values.ingress.streamingHost | quote }}
+  {{- end }}
+{{- end }}
